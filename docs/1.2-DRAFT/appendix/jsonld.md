@@ -224,7 +224,7 @@ To extend RO-Crate, implementers SHOULD try to use existing <http://schema.org/>
 
 The _terms_ (properties and types) used SHOULD be added as keys to the `@context` in the _RO-Crate JSON-LD_ (if not present). To avoid duplicating the _RO-Crate JSON-LD Context_ the `@context: []` array form SHOULD be used as shown below.
 
-URIs in the `@context` SHOULD resolve to a useful human readable page. When this is not possible - for example if the URI resolves to an RDF ontology file, a human-readable URI SHOULD be provided using a [sameAs] description.
+URIs in the `@context` SHOULD resolve to a useful human readable page. When this is not possible - for example if the URI resolves to an RDF ontology file, a human-readable URI SHOULD be provided as a [DefinedTerm] using a [sameAs] description.
 
 For example. The `@id` URI <http://purl.org/ontology/bibo/interviewee> from the [BIBO ontology] intends to resolve to an ontology file, which is not useful for humans, however the HTML section <http://neologism.ecs.soton.ac.uk/bibo.html#interviewee> is human-readable. To read more about best practices for content negotiation of vocabularies, we refer the reader to [Best Practice Recipes for Publishing RDF Vocabularies].
 
@@ -238,8 +238,9 @@ For example. The `@id` URI <http://purl.org/ontology/bibo/interviewee> from the 
   "@graph": [
   {
       "@id": "http://purl.org/ontology/bibo/interviewee",
-      "sameAs": "http://neologism.ecs.soton.ac.uk/bibo.html#interviewee",
-      "@type": "Thing"
+      "@type": "DefinedTerm",
+      "name": "interviewee",
+      "sameAs": "http://neologism.ecs.soton.ac.uk/bibo.html#interviewee"
   }
  ]
 }
@@ -292,22 +293,22 @@ In both cases, to use an ad-hoc term in an RO-Crate, the URI MUST be included in
 
 Following the conventions used by Schema.org, ad-hoc terms SHOULD also include definitions in the RO-Crate with at minimum:
 
-* `@type` of either `rdfs:Class` (contextual entity type) or `rdf:Property` (attribute of an contextual entity)
-* `rdfs:label` with the human readable version of the term, e.g. `makesFood` has label `makes food`
-* `rdfs:comment` documenting and clarifying the meaning of the term. For instance the term `sentence` in a prisoner vocabulary will have a different explanation than `sentence` in a linguistic vocabulary.
+* `@type` of [DefinedTerm], and optionally (as an array) of `rdf:Property` or `rdfs:Class`
+* `name` with the human readable version of the term, e.g. `http://example.com/vocab#makesFood` has label `makes food`
+* `description` documenting and clarifying the meaning of the term. For instance the term `education` meaning _Person's education level, e.g. primary school_ compared to the meaning _Educational Material_
 
 ```json
 {
     "@id": "https://criminalcharacters.com/vocab#education",
-    "@type": "rdf:Property",
-    "rdfs:label": "education",
-    "rdfs:comment": "Literacy of prisoner. ..."
+    "@type": ["DefinedTerm", "rdf:Property"],
+    "name": "education",
+    "description": "Educational Material. ..."
 }
 ```
 
 {: .tip }
 > It is **not** a requirement to use English for the terms, labels or comments.
 
-More information about the relationship of this term to other terms MAY be provided using [domainIncludes], [rangeIncludes], [rdfs:subClassOf] following the conventions used in the [Schema.org schema].
+More information about the relationship of this term to other terms MAY be provided using [domainIncludes], [rangeIncludes], [rdfs:subClassOf] following the conventions used in the [Schema.org schema]. The `name` and `description` MAY be duplicated using the properties `rdfs:label` and `rdfs:comment` for compatibility with RDFS vocabularies.
 
 {% include references.liquid %}
